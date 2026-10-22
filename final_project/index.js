@@ -20,11 +20,11 @@ app.use("/customer/auth/*", function auth(req,res,next){
                 req.user = user;
                 next();
             } else {
-                res.status(403).send("Invalid token.");
+                res.status(403).json({message: "Invalid token."});
             }
         });
     } else {
-        res.status(403).send("User not authenticated.");
+        res.status(403).json({message: "User not authenticated."});
     }
 });
  
