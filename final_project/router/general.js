@@ -42,7 +42,7 @@ public_users.get('/title/:title',function (req, res) {
 public_users.get('/review/:isbn',function (req, res) {
     const booksArray = Object.entries(books);
     let bookRes = booksArray.filter(([key, bookData]) => parseInt(key) === parseInt(req.params.isbn));
-    //bookRes = bookRes.map(([key, bookData]) => bookData.reviews);
+    bookRes = bookRes.map(([key, bookData]) => bookData.reviews);
     res.status(200).send(bookRes);
 });
 

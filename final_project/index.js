@@ -26,9 +26,9 @@ app.use("/customer/auth/*", function auth(req,res,next){
     } else {
         res.status(403).json({message: "User not authenticated."});
     }
-});
+}); 
  
-const PORT =500;
+const PORT =5000;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
