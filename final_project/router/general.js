@@ -64,10 +64,21 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  const booksArray = Object.entries(books);
-  let titleBook = booksArray.filter(([key, bookData]) => bookData.title.toLowerCase() === req.params.title.toLowerCase());
-  titleBook = titleBook.map(([key, bookData]) => bookData);
-  res.status(200).send(titleBook);
+  
+  const booksbyT = new Promise((resolve, reject) => {
+      const booksArray = Object.entries(books);
+    let titleBook = booksArray.filter(([key, bookData]) => bookData.title.toLowerCase() === req.params.title.toLowerCase());
+    titleBook = titleBook.map(([key, bookData]) => bookData);
+    if (titleBook.length != 0){
+        resolve(titleBook);
+    } else {
+        reject("Not found.");
+    }
+  });
+
+  booksbyT
+  .then((tBook)=>res.status(200).send(tBook))
+  .catch((err)=>res.status(404).send(err.message()));
 });
 
 //  Get book review
