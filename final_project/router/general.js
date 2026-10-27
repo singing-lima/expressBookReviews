@@ -9,7 +9,6 @@ const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
   let {username, password} = req.body;
-  //let password = req.body.password; 
   
   if (username && password){
     if (isValid(username)) {
@@ -43,7 +42,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
     resolve(books[isbnN]);
   });
   booksbyI
-  .then((bookbyI) => res.status(200).send (bookbyI))
+  .then((bookbyI) => res.status(200).send(bookbyI))
   .catch((err) => res.status(500).json({ message: "Error" }));
  });
   
@@ -83,6 +82,7 @@ public_users.get('/title/:title',function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
+    
     const booksArray = Object.entries(books);
     let bookRes = booksArray.filter(([key, bookData]) => parseInt(key) === parseInt(req.params.isbn));
     bookRes = bookRes.map(([key, bookData]) => bookData.reviews);

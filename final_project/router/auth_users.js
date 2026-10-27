@@ -27,14 +27,14 @@ regd_users.post("/login", (req,res) => {
     if (authenticatedUser(username, password)){
         let accessToken = jwt.sign({user: username}, "secret", {expiresIn: 60 * 60});
         req.session.authorization = {accessToken, username};
-        res.status(201).json({ message: "Access successful." });
+        res.status(201).json({message: "Login successful!"});
     }else {
         res.status(400).json({message: "User or password invalid."});
     };
   } else {
     res.status(400).json({message: "Complete the fields."});
   };
-});
+}); 
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
@@ -45,14 +45,21 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
         revExist = true;
     };
     //books[isbnInt].reviews["Carlos"] = "Prueba";
-    books[isbnInt].reviews[req.user] = req.query.review;
+    const rqr = req.query.review;
+    books[isbnInt].reviews[req.user] = rqr;
+    //res.send(req.user+": "+rqr);
     if (revExist){
-        res.status(200).send("Review rewrited.");
+        res.status(200).json({message:"Review update successfully",
+        [req.user]: [rqr]
+        });
     } else {
-        res.status(200).send("Review added.");
+        res.status(200).json({message:"Review added successfully",
+        [req.user]: [rqr]
+    });
     };
+    
   } catch {
-    res.status(403).send("Error trying to add review.");
+    res.status(403).json({message:"Error trying to add review."});
   };
 });
 
@@ -65,12 +72,12 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
         };
         if (revExist){
             delete books[isbnInt].reviews[req.user];
-            res.status(200).send("Review deleted.");
+            res.status(200).json({message:"Review for ISBN 1 deleted"});
         } else {
-            res.status(200).send("Review does not exist.");
+            res.status(200).json({message:"Review does not exist."});
         };
       } catch {
-        res.status(403).send("Error trying to delete review.");
+        res.status(403).json({message:"Error trying to delete review."});
       };
 });
 
