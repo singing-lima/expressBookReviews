@@ -6,6 +6,7 @@ const public_users = express.Router();
 
 
 
+
 public_users.post("/register", (req,res) => {
   let {username, password} = req.body;
   //let password = req.body.password; 
@@ -26,22 +27,39 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  res.status(200).send (JSON.stringify(books, null, 4));
+  const allBooks = new Promise((resolve, reject)=>{
+    resolve(JSON.stringify(books, null, 4));
+  });
+  
+  allBooks
+  .then((bookL) => res.status(200).send(bookL))
+  .catch((err) => res.status(500).json({ message: "Error" }));
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  let isbnN = parseInt(req.params.isbn);
-  res.status(200).send (books[isbnN]);
+  const booksbyI = new Promise((resolve, reject) => {
+    let isbnN = parseInt(req.params.isbn);
+    resolve(books[isbnN]);
+  });
+  booksbyI
+  .then((bookbyI) => res.status(200).send (bookbyI))
+  .catch((err) => res.status(500).json({ message: "Error" }));
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  const booksArray = Object.entries(books);
-  let authorBooks = booksArray.filter(([key, bookData]) => bookData.author.toLowerCase() === req.params.author.toLowerCase());
-  authorBooks = authorBooks.map(([key, bookData]) => bookData);
 
-  res.status(200).send(authorBooks);
+  const booksbyA = new Promise((resolve, reject) => {
+    const booksArray = Object.entries(books);
+    let authorBooks = booksArray.filter(([key, bookData]) => bookData.author.toLowerCase() === req.params.author.toLowerCase());
+    authorBooks = authorBooks.map(([key, bookData]) => bookData);
+    resolve(authorBooks);
+  });
+  booksbyA
+  .then((bookbyA) => res.status(200).send (bookbyA))
+  .catch((err) => res.status(500).json({ message: "Error" }));
+ 
 });
 
 // Get all books based on title
