@@ -38,9 +38,43 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  try {
+    const isbnInt=parseInt(req.params.isbn);
+    let revExist = false;
+    if (Object.hasOwn(books[isbnInt].reviews, req.user)) {
+        revExist = true;
+    };
+    //books[isbnInt].reviews["Carlos"] = "Prueba";
+    books[isbnInt].reviews[req.user] = req.query.review;
+    if (revExist){
+        res.status(200).send("Review rewrited.");
+    } else {
+        res.status(200).send("Review added.");
+    };
+  } catch {
+    res.status(403).send("Error trying to add review.");
+  };
 });
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    try {
+        const isbnInt=parseInt(req.params.isbn);
+        let revExist = false;
+        if (Object.hasOwn(books[isbnInt].reviews, req.user)) {
+            revExist = true;
+        };
+        if (revExist){
+            delete books[isbnInt].reviews[req.user];
+            res.status(200).send("Review deleted.");
+        } else {
+            res.status(200).send("Review does not exist.");
+        };
+      } catch {
+        res.status(403).send("Error trying to delete review.");
+      };
+});
+
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
